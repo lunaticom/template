@@ -1,0 +1,7 @@
+{
+  "name": "html-template-api",
+  "version": "1.0.0",
+  "dependencies": {
+    "handlebars": "^4.7.8"
+  }
+}
