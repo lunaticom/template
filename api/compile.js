@@ -2,14 +2,36 @@ const fs = require("fs");
 const path = require("path");
 const handlebars = require("handlebars");
 
+// Funzione che formatta testo semplice in HTML con paragrafi e <br>
+function autoFormatSmart(text) {
+  if (!text) return "";
+
+  const paragraphs = text
+    .split(/\n\s*\n/) // doppio a capo = nuovo paragrafo
+    .map(p => {
+      const withLineBreaks = p.trim().replace(/\n/g, "<br>");
+      return `<p style="line-height:1.5; font-family:Arial;">${withLineBreaks}</p>`;
+    });
+
+  return paragraphs.join("\n");
+}
+
 module.exports = async (req, res) => {
   const data = req.body;
-  const templateHtml = fs.readFileSync(
-    path.join(__dirname, "template.html"),
-    "utf8"
-  );
-  const template = handlebars.compile(templateHtml);
+  const selectedTemplate = data.Template || "template"; // default = template.html
+
+  const templatePath = path.join(__dirname, `${selectedTemplate}.html`);
+  if (!fs.existsSync(templatePath)) {
+    return res.status(400).json({ error: "Template non trovato" });
+  }
+
+  // Applica formattazione smart ai campi testuali lunghi
+  if (data.Descrizione) data.Descrizione = autoFormatSmart(data.Descrizione);
+
+  const rawTemplate = fs.readFileSync(templatePath, "utf8");
+  const template = handlebars.compile(rawTemplate);
   const filledHtml = template(data);
 
+  res.setHeader("Content-Type", "application/json");
   res.status(200).json({ html: filledHtml });
 };
