@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
   if (!fs.existsSync(templatePath)) {
     return res.status(400).json({ error: "Template non trovato" });
   }
-  console.log("DEBUG — Template path:", templatePath);
+  //console.log("DEBUG — Template path:", templatePath);
 
   // Applica formattazione smart ai campi testuali lunghi
   if (data.Descrizione) data.Descrizione = autoFormatSmart(data.Descrizione);
