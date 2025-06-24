@@ -18,9 +18,10 @@ function autoFormatSmart(text) {
 
 module.exports = async (req, res) => {
   const data = req.body;
-  const selectedTemplate = data.Template || "template"; // default = template.html
-console.log("DEBUG — Payload received:", data);
-console.log("DEBUG — Selected template:", selectedTemplate);
+  
+  const selectedTemplate = data.Template || data.template || "template";
+//console.log("DEBUG — Payload received:", data);
+//console.log("DEBUG — Selected template:", selectedTemplate);
 
   const templatePath = path.join(__dirname, `${selectedTemplate}.html`);
   if (!fs.existsSync(templatePath)) {
