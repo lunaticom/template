@@ -19,7 +19,10 @@ function autoFormatSmart(text) {
 module.exports = async (req, res) => {
   const data = req.body;
   
-  const selectedTemplate = data.Template || "template";
+  const selectedTemplate = (data.Template || "template")
+  .toString()
+  .trim()        // rimuove spazi/invii ai lati
+  .toLowerCase();// tutto minuscolo
 
 //console.log("DEBUG — Payload received:", data);
 //console.log("DEBUG — Selected template:", selectedTemplate);
