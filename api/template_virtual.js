@@ -2,7 +2,7 @@ export default function handler(req, res) {
   const html = `
     <html>
     <body style="font-family: Arial, sans-serif">
-    <p>BINGO</p>
+    <p>VIRTUAL</p>
     <h1>{{Titolo}}</h1>
     <p>{{Descrizione}}</p>
     <img src="{{Immagine_URL}}" alt="banner" width="600" />
