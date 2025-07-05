@@ -1036,7 +1036,7 @@ export default function handler(req, res) {
                                           target="_blank"
                                           name="click_offset_7"
                                           ><img
-                                            src="{{Immagine_URL}}"
+                                            src="http://www.imgheader.com"
                                             style="
                                               display: block;
                                               height: auto;
@@ -1648,7 +1648,7 @@ export default function handler(req, res) {
                                     >
                                       <p style="margin: 0">
                                         Termini e Condizioni* <br />
-                                        {{T_C}}
+                                        PlaceholderTC
                                       </p>
                                     </div>
                                   </td>
