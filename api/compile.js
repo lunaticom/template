@@ -2,40 +2,43 @@ const fs = require("fs");
 const path = require("path");
 const handlebars = require("handlebars");
 
-// Funzione che formatta testo semplice in HTML con paragrafi e <br>
+// Smart formatter: double newlines → <p>, single newlines → <br>
 function autoFormatSmart(text) {
   if (!text) return "";
-
   const paragraphs = text
-    .split(/\n\s*\n/) // doppio a capo = nuovo paragrafo
+    .split(/\n\s*\n/) // double newline = new paragraph
     .map(p => {
       const withLineBreaks = p.trim().replace(/\n/g, "<br>");
       return `<p style="line-height:1.5; font-family:Arial;">${withLineBreaks}</p>`;
     });
-
   return paragraphs.join("\n");
 }
 
 module.exports = async (req, res) => {
   const data = req.body;
-  
-  const selectedTemplate = (data.Template || "template")
-  .toString()
-  .trim()        // rimuove spazi/invii ai lati
-  .toLowerCase();// tutto minuscolo
 
-//console.log("DEBUG — Payload received:", data);
-//console.log("DEBUG — Selected template:", selectedTemplate);
+  // ✅ Option A: if raw HTML is sent directly (from Zapier), return it
+  if (data.html) {
+    return res.status(200).json({ html: data.html });
+  }
+
+  // ✅ Option B: fallback to template-based rendering
+  const selectedTemplate = (data.Template || "template")
+    .toString()
+    .trim()
+    .toLowerCase();
 
   const templatePath = path.join(__dirname, `${selectedTemplate}.html`);
   if (!fs.existsSync(templatePath)) {
-    return res.status(400).json({ error: "Template non trovato" });
+    return res.status(400).json({ error: `Template '${selectedTemplate}.html' not found` });
   }
-  //console.log("DEBUG — Template path:", templatePath);
 
-  // Applica formattazione smart ai campi testuali lunghi
-  if (data.Descrizione) data.Descrizione = autoFormatSmart(data.Descrizione);
+  // Format long text fields
+  if (data.Descrizione) {
+    data.Descrizione = autoFormatSmart(data.Descrizione);
+  }
 
+  // Compile the Handlebars template
   const rawTemplate = fs.readFileSync(templatePath, "utf8");
   const template = handlebars.compile(rawTemplate);
   const filledHtml = template(data);
